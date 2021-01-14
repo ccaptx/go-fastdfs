@@ -121,7 +121,7 @@ const (
 	CONST_MESSAGE_CLUSTER_IP       = "Can only be called by the cluster ip or 127.0.0.1 or admin_ips(cfg.json),current ip:%s"
 )
 
-var(
+var (
 	globalConfigHandler = globalConfig.Handler{}
 )
 
@@ -2165,7 +2165,7 @@ func (this *Server) SaveUploadFile(file multipart.File, header *multipart.FileHe
 	if fileInfo.ReName != "" {
 		outPath = fmt.Sprintf(folder+"/%s", fileInfo.ReName)
 	}
-	if this.util.FileExists(outPath) {
+	if this.util.FileExists(outPath) && !Config().EnableDistinctFile {
 		for i := 0; i < 10000; i++ {
 			tempFolder := fmt.Sprintf(folder+"/%d", i)
 			if !this.util.FileExists(tempFolder) {
@@ -2173,7 +2173,7 @@ func (this *Server) SaveUploadFile(file multipart.File, header *multipart.FileHe
 					log.Error(err)
 				}
 			}
-			outPath = fmt.Sprintf(tempFolder+"/%s", i, filepath.Base(header.Filename))
+			outPath = fmt.Sprintf(tempFolder+"/%s", filepath.Base(header.Filename))
 			//fileInfo.Name = fmt.Sprintf("%d_%s", i, header.Filename)
 			if !this.util.FileExists(outPath) {
 				folder = tempFolder

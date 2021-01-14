@@ -2,24 +2,27 @@ package globalConfig
 
 import (
 	"fmt"
-	"github.com/sjqzhang/goutil"
 	"os"
 	"strings"
+
+	"github.com/sjqzhang/goutil"
 )
 
 /***
 通过环境变量来初始化默认配置，如下为Docker启动时的环境变量实例
 -e GO_FASTDFS_PEER_ID=1 \
+-e GO_FASTDFS_IP=192.168.70.162 \
 -e GO_FASTDFS_PEERS="\"http://192.168.70.162:8080\"" \
 -e GO_FASTDFS_ADMIN_IP="\"0.0.0.0\"" \
 -e GO_FASTDFS_PORT=8080 \
 -e GO_FASTDFS_GROUP=group1 \
+-e GO_FASTDFS_DISTINCT_FILE=false \
 ***/
 const cutset = " "
+
 var util *goutil.Common = &goutil.Common{}
 
-
-func getInitPeerId() string{
+func getInitPeerId() string {
 	var peerId string
 	if peerId = strings.Trim(os.Getenv("GO_FASTDFS_PEER_ID"), cutset); peerId == "" {
 		peerId = fmt.Sprintf("%d", util.RandInt(0, 9))
@@ -27,23 +30,23 @@ func getInitPeerId() string{
 	return peerId
 }
 
-func getInitPort() string{
+func getInitPort() string {
 	var port string
 	if port = strings.Trim(os.Getenv("GO_FASTDFS_PORT"), cutset); port == "" {
 		port = "8080"
 	}
 	return port
 }
-func GetInitIp() string{
+func GetInitIp() string {
 	var ip string
 	if ip = strings.Trim(os.Getenv("GO_FASTDFS_IP"), cutset); ip == "" {
 		ip = util.GetPulicIP()
 	}
 	return ip
 }
-func getInitHost() string{
+func getInitHost() string {
 	peer := "http://" + GetInitIp() + ":" + getInitPort()
-	return peer;
+	return peer
 }
 
 func getInitPeers() string {
@@ -54,43 +57,43 @@ func getInitPeers() string {
 	return peers
 }
 
-func getInitGroup() string{
+func getInitGroup() string {
 	var group string
 	if group = strings.Trim(os.Getenv("GO_FASTDFS_GROUP"), cutset); group == "" {
 		group = "group1"
 	}
-	return group;
+	return group
 }
 
-func getInitAdminIp() string{
+func getInitAdminIp() string {
 	adminIp := strings.Trim(os.Getenv("GO_FASTDFS_ADMIN_IP"), cutset)
 	if adminIp == "" {
 		adminIp = "\"127.0.0.1\""
-	} else{
+	} else {
 		if !strings.Contains(adminIp, "127.0.0.1") && !strings.Contains(adminIp, "0.0.0.0") {
 			adminIp += ",\"127.0.0.1\""
 		}
 	}
-	return adminIp;
+	return adminIp
 }
 
-func getInitRenameFile() string{
+func getInitRenameFile() string {
 	var renameFile string
 	if renameFile = strings.Trim(os.Getenv("GO_FASTDFS_RENAME"), cutset); renameFile == "" {
 		renameFile = "false"
 	}
-	return renameFile;
+	return renameFile
 }
 
-func getInitDistinctFile() string{
+func getInitDistinctFile() string {
 	var enableDistinctFile string
 	if enableDistinctFile = strings.Trim(os.Getenv("GO_FASTDFS_DISTINCT_FILE"), cutset); enableDistinctFile == "" {
 		enableDistinctFile = "true"
 	}
-	return enableDistinctFile;
+	return enableDistinctFile
 }
 
-func (handler *Handler) InitGlobalConfig() bool{
+func (handler *Handler) InitGlobalConfig() bool {
 	DOCKER_DIR := os.Getenv("GO_FASTDFS_DIR")
 	if DOCKER_DIR != "" {
 		if !strings.HasSuffix(DOCKER_DIR, "/") {
